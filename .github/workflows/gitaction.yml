@@ -20,12 +20,12 @@ jobs:
           FILE_PATH=ScannerResult.csv
           csv_file="$FILE_PATH"
           base64_string=$(base64 "$csv_file")
-          # echo "BASE64_STRING1=$base64_string"  >> "$GITHUB_ENV"
-          {
-            echo 'BASE64_STRING1<<EOF'
-            '$base64_string'
-            echo EOF
-          } >> "$GITHUB_ENV"
+          echo "BASE64_STRING1=\"$base64_string\""  >> "$GITHUB_ENV"
+          # {
+          #   echo 'BASE64_STRING1<<EOF'
+          #   '$base64_string'
+          #   echo EOF
+          # } >> "$GITHUB_ENV"
       - name: Get Salesforce OAuth2 Token
         id: get_token
         run: |
