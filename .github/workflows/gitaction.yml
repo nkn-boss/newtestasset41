@@ -23,7 +23,7 @@ jobs:
           # echo "BASE64_STRING1=$base64_string"  >> "$GITHUB_ENV"
           {
             echo 'BASE64_STRING1<<EOF'
-            $base64_string
+            '$base64_string'
             echo EOF
           } >> "$GITHUB_ENV"
       - name: Get Salesforce OAuth2 Token
