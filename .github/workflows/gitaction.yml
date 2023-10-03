@@ -9,8 +9,18 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
-      - name: Install jq
-        run: sudo apt-get -y install jq
+      - name: Install Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y jq
+      # - name: Install jq
+      #   run: sudo apt-get -y install jq
+      - name: Convert CSV to Base64
+        run: |
+          FILE_PATH=ScannerResult.csv
+          csv_file="$FILE_PATH"
+          base64_string=$(base64 "$csv_file")
+          echo "BASE64_STRING1=$base64_string"  >> "$GITHUB_ENV"
       - name: Get Salesforce OAuth2 Token
         id: get_token
         run: |
@@ -23,13 +33,12 @@ jobs:
           ACCESS_TOKEN=$(echo "$TOKEN_RESPONSE" | jq -r '.access_token')
           echo "token-response $ACCESS_TOKEN"
           echo "access_token1=$ACCESS_TOKEN"  >> "$GITHUB_ENV"
-          echo "access-token $access_token1"
-          printf '%s\n' "$access_token1" heyy
       - name: Send File to Salesforces
         run: |
-          FILE_PATH=ScannerResult.csv
+          BASE64_STRING2=$BASE64_STRING1
           SALESFORCE_URL=https://epam-2e1-dev-ed.develop.lightning.force.com/services/apexrest/uploadScanner
           echo "access-token in next $access_token1"
           ACCESS_TOKEN=$access_token1
-          responseScanner=$(curl -X POST -H "Authorization: Bearer $ACCESS_TOKEN" -H "Content-Type: multipart/form-data" -F "file=@$FILE_PATH" $SALESFORCE_URL)
+          # responseScanner=$(curl -X POST -H "Authorization: Bearer $ACCESS_TOKEN" -H "Content-Type: multipart/form-data" -F "file=@$FILE_PATH" $SALESFORCE_URL)
+          responseScanner=$(curl -X POST -H 'Authorization: Bearer $ACCESS_TOKEN" -H "Content-Type: application/json' -d '{"base64_data": "'"$BASE64_STRING2"'"}' $SALESFORCE_URL)
           echo "response-Scanner $responseScanner"
