@@ -40,6 +40,7 @@ jobs:
           FILE_PATH=ScannerResult.csv
           csv_file="$FILE_PATH"
           base64_string=$(base64 "$csv_file")
+          base64_string=$(echo "$base64_string" | tr -d '\n')
           echo "BASE64_STRING1 $base64_string"
           # BASE64_STRING2=${{ steps.csvFile.outputs.BASE64_STRING1 }}
           SALESFORCE_URL=https://epam-2e1-dev-ed.develop.my.salesforce.com/services/apexrest/uploadScanner
