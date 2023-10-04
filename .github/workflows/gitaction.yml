@@ -31,5 +31,11 @@ jobs:
           base64_string=$(echo "$base64_string" | tr -d '\n')
           SALESFORCE_URL=https://epam-2e1-dev-ed.develop.my.salesforce.com/services/apexrest/uploadScanner
           ACCESS_TOKEN=$access_token1
-          responseScanner=$(curl -X POST -H "Authorization: Bearer $ACCESS_TOKEN" -H "Content-Type: application/json" -d '{"base64_data": "'"$base64_string"'","repoName":"'"$GITHUB_REPOSITORY"'"}' $SALESFORCE_URL)
+          # Use jq to create a JSON object
+          json_body=$(jq -n \
+            --arg key1 $base64_string \
+            --arg key2 $GITHUB_REPOSITORY \
+            '{"base64_data": $key1, "repoName": $key2}')
+          responseScanner=$(curl -X POST -H "Authorization: Bearer $ACCESS_TOKEN" -H "Content-Type: application/json" -d '$json_body' $SALESFORCE_URL)
           echo "response-Scanner $responseScanner"
+          # {"base64_data": "'"$base64_string"'","repoName":"'"$GITHUB_REPOSITORY"'"}
