@@ -1,4 +1,4 @@
-name: Send File to Salesforce env1
+name: Send File to Salesforce env
 on:
   push:
     branches:
