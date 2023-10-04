@@ -1,4 +1,4 @@
-name: Salesforce Code Analyzer PMD
+name: Salesforce Code Analyzer ESLint
 on:
   push:
     branches:
@@ -28,7 +28,7 @@ jobs:
           SF_USERNAME: ${{ vars.SF_USERNAME }}
         run: sfdx force:auth:jwt:grant --clientid $SF_CLIENT_ID --jwtkeyfile $SF_PRIVATE_KEY --username $SF_USERNAME --setdefaultdevhubusername --setalias my-org
       - name: Run Code Analyzer
-        run: sfdx scanner:run --target "*/**/*.cls" --outfile "ScannerResult.csv"
+        run: sfdx scanner:run --target "*/**/*.js" --outfile "ScannerResult.csv" --engine "eslint-lwc" --normalize-severity 
         continue-on-error: true
       - name: Commit and push changes
         run: |
@@ -47,6 +47,8 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
+        with:
+          ref: master
       - name: Install Dependencies
         run: |
           sudo apt-get update
